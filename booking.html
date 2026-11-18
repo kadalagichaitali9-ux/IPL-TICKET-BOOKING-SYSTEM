@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10172a">
+    <meta name="description" content="Choose an IPL 2026 match and enter your ticket booking details.">
+    <title>Book IPL 2026 Tickets</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="container nav-wrap" aria-label="Main navigation">
+            <a class="brand" href="index.html#home" aria-label="IPL Tickets home">
+                <span class="brand-mark" aria-hidden="true">IPL</span>
+                <span>IPL TICKETS</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html#matches">Matches</a></li>
+                <li><a href="booking.html" aria-current="page">Book Ticket</a></li>
+                <li><a href="index.html#my-bookings">My Bookings</a></li>
+                <li><a href="index.html#guidelines">Guidelines</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="section section-white" aria-labelledby="booking-title">
+            <div class="container">
+                <header class="section-heading">
+                    <p class="section-kicker">Your matchday</p>
+                    <h1 id="booking-title">Book Your IPL Ticket</h1>
+                    <p>Fill in the details below. Your browser will check required fields and input formats before continuing.</p>
+                </header>
+
+                <form class="form-card" id="ticket-booking-form">
+                    <h2>Ticket details</h2>
+                    <p class="form-intro">All fields marked required must be completed.</p>
+
+                    <div class="form-grid">
+                        <div class="field field-full">
+                            <label for="customer-name">Name</label>
+                            <input
+                                id="customer-name"
+                                name="name"
+                                type="text"
+                                autocomplete="name"
+                                minlength="2"
+                                maxlength="60"
+                                placeholder="Your full name"
+                                required>
+                        </div>
+
+                        <div class="field">
+                            <label for="customer-email">Email</label>
+                            <input
+                                id="customer-email"
+                                name="email"
+                                type="email"
+                                autocomplete="email"
+                                maxlength="254"
+                                placeholder="you@example.com"
+                                required>
+                        </div>
+
+                        <div class="field">
+                            <label for="customer-phone">Phone Number</label>
+                            <input
+                                id="customer-phone"
+                                name="phone"
+                                type="tel"
+                                autocomplete="tel"
+                                inputmode="tel"
+                                minlength="10"
+                                maxlength="15"
+                                pattern="[+]?(91[ -]?)?[6-9][0-9]{9}"
+                                title="Enter a valid 10-digit Indian mobile number, optionally with the +91 country code."
+                                placeholder="+91 98765 43210"
+                                required>
+                        </div>
+
+                        <div class="field">
+                            <label for="match-select">Match Selection</label>
+                            <select id="match-select" name="match" required>
+                                <option value="" selected disabled>Choose a match</option>
+                                <option value="match-1">Match 01 · CSK vs MI · Chennai</option>
+                                <option value="match-2">Match 02 · RCB vs KKR · Bengaluru</option>
+                                <option value="match-3">Match 03 · SRH vs RR · Hyderabad</option>
+                                <option value="match-4">Match 04 · DC vs PBKS · New Delhi</option>
+                                <option value="match-5">Match 05 · GT vs LSG · Ahmedabad</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label for="stand-select">Stand Category</label>
+                            <select id="stand-select" name="stand" required>
+                                <option value="" selected disabled>Choose a stand</option>
+                                <option value="general">General</option>
+                                <option value="premium">Premium</option>
+                                <option value="vip">VIP</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label for="ticket-quantity">Number of Tickets</label>
+                            <input
+                                id="ticket-quantity"
+                                name="quantity"
+                                type="number"
+                                min="1"
+                                max="10"
+                                step="1"
+                                value="1"
+                                required>
+                        </div>
+
+                        <fieldset class="choice-field field-full">
+                            <legend>Seat preference</legend>
+                            <label>
+                                <input type="radio" name="seat-preference" value="any" checked>
+                                Any available seat
+                            </label>
+                            <label>
+                                <input type="radio" name="seat-preference" value="aisle">
+                                Aisle seat, if available
+                            </label>
+                        </fieldset>
+
+                        <label class="checkbox-field field-full">
+                            <input type="checkbox" name="guidelines-agreement" required>
+                            I have read and agree to follow the stadium entry guidelines.
+                        </label>
+                    </div>
+
+                    <div class="form-actions">
+                        <button class="button form-submit" type="submit">Submit Booking Details</button>
+                        <button class="button button-reset" type="reset">Reset Form</button>
+                    </div>
+                    <p class="form-message" id="form-message" role="status" hidden></p>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2026 IPL Tickets. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const matchSelect = document.getElementById("match-select");
+        const requestedMatch = new URLSearchParams(window.location.search).get("match");
+
+        if (requestedMatch && Array.from(matchSelect.options).some((option) => option.value === requestedMatch)) {
+            matchSelect.value = requestedMatch;
+        }
+
+        const bookingForm = document.getElementById("ticket-booking-form");
+        const formMessage = document.getElementById("form-message");
+
+        bookingForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+            formMessage.textContent = "Your details passed validation. Online booking processing is not connected yet.";
+            formMessage.hidden = false;
+        });
+
+        bookingForm.addEventListener("reset", () => {
+            formMessage.hidden = true;
+            formMessage.textContent = "";
+        });
+    </script>
+</body>
+</html>
