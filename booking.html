@@ -7,6 +7,7 @@
     <meta name="description" content="Choose an IPL 2026 match and enter your ticket booking details.">
     <title>Book IPL 2026 Tickets</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
 </head>
 <body>
     <header class="site-header">
@@ -15,7 +16,12 @@
                 <span class="brand-mark" aria-hidden="true">IPL</span>
                 <span>IPL TICKETS</span>
             </a>
-            <ul class="nav-links">
+            <button class="menu-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="primary-navigation">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </button>
+            <ul class="nav-links" id="primary-navigation">
                 <li><a href="index.html#matches">Matches</a></li>
                 <li><a href="booking.html" aria-current="page">Book Ticket</a></li>
                 <li><a href="index.html#my-bookings">My Bookings</a></li>
@@ -30,14 +36,15 @@
                 <header class="section-heading">
                     <p class="section-kicker">Your matchday</p>
                     <h1 id="booking-title">Book Your IPL Ticket</h1>
-                    <p>Fill in the details below. Your browser will check required fields and input formats before continuing.</p>
+                    <p>Choose your match and stand to see your ticket total update as you go.</p>
                 </header>
 
-                <form class="form-card" id="ticket-booking-form">
-                    <h2>Ticket details</h2>
-                    <p class="form-intro">All fields marked required must be completed.</p>
+                <div class="booking-layout">
+                    <form class="form-card" id="ticket-booking-form">
+                        <h2>Ticket details</h2>
+                        <p class="form-intro">All fields marked required must be completed.</p>
 
-                    <div class="form-grid">
+                        <div class="form-grid">
                         <div class="field field-full">
                             <label for="customer-name">Name</label>
                             <input
@@ -130,14 +137,42 @@
                             <input type="checkbox" name="guidelines-agreement" required>
                             I have read and agree to follow the stadium entry guidelines.
                         </label>
-                    </div>
+                        </div>
 
-                    <div class="form-actions">
-                        <button class="button form-submit" type="submit">Submit Booking Details</button>
-                        <button class="button button-reset" type="reset">Reset Form</button>
-                    </div>
-                    <p class="form-message" id="form-message" role="status" hidden></p>
-                </form>
+                        <div class="form-actions">
+                            <button class="button form-submit" type="submit">Submit Booking Details</button>
+                            <button class="button button-reset" type="reset">Reset Form</button>
+                        </div>
+                        <p class="form-message" id="form-message" role="status" hidden></p>
+                    </form>
+
+                    <aside class="summary-card" aria-labelledby="summary-title" aria-live="polite">
+                        <h2 id="summary-title">Booking Summary</h2>
+                        <p class="form-intro">Your ticket details and live total</p>
+                        <dl class="summary-list">
+                            <div class="summary-row">
+                                <dt>Match</dt>
+                                <dd id="summary-match">Choose a match</dd>
+                            </div>
+                            <div class="summary-row">
+                                <dt>Stand</dt>
+                                <dd id="summary-stand">Choose a stand</dd>
+                            </div>
+                            <div class="summary-row">
+                                <dt>Ticket price</dt>
+                                <dd id="summary-price">—</dd>
+                            </div>
+                            <div class="summary-row">
+                                <dt>Quantity</dt>
+                                <dd id="summary-quantity">1</dd>
+                            </div>
+                            <div class="summary-row summary-total">
+                                <dt>Total amount</dt>
+                                <dd id="summary-total">—</dd>
+                            </div>
+                        </dl>
+                    </aside>
+                </div>
             </div>
         </section>
     </main>
@@ -147,28 +182,6 @@
             <p>&copy; 2026 IPL Tickets. All rights reserved.</p>
         </div>
     </footer>
-
-    <script>
-        const matchSelect = document.getElementById("match-select");
-        const requestedMatch = new URLSearchParams(window.location.search).get("match");
-
-        if (requestedMatch && Array.from(matchSelect.options).some((option) => option.value === requestedMatch)) {
-            matchSelect.value = requestedMatch;
-        }
-
-        const bookingForm = document.getElementById("ticket-booking-form");
-        const formMessage = document.getElementById("form-message");
-
-        bookingForm.addEventListener("submit", (event) => {
-            event.preventDefault();
-            formMessage.textContent = "Your details passed validation. Online booking processing is not connected yet.";
-            formMessage.hidden = false;
-        });
-
-        bookingForm.addEventListener("reset", () => {
-            formMessage.hidden = true;
-            formMessage.textContent = "";
-        });
-    </script>
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 </body>
 </html>
