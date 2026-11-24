@@ -38,16 +38,7 @@ function updateSummary() {
     }
 
     const match = matches[matchSelect.value];
-    if (!match) {
-        return;
-    }
-
     const stand = standSelect.value;
-    const price = match.prices[stand];
-    if (price === undefined) {
-        return;
-    }
-
     const summaryElements = [
         document.getElementById("summary-match"),
         document.getElementById("summary-stand"),
@@ -59,12 +50,21 @@ function updateSummary() {
         return;
     }
 
-    const quantity = Number(quantityInput.value) || 1;
-    summaryElements[0].textContent = match.label;
-    summaryElements[1].textContent = standSelect.options[standSelect.selectedIndex].text;
-    summaryElements[2].textContent = currency.format(price);
-    summaryElements[3].textContent = quantity;
-    summaryElements[4].textContent = currency.format(price * quantity);
+    const quantity = Number(quantityInput.value);
+    const validQuantity = Number.isInteger(quantity)
+        && quantity >= Number(quantityInput.min)
+        && quantity <= Number(quantityInput.max);
+    const price = match && match.prices[stand];
+
+    summaryElements[0].textContent = match ? match.label : "Choose a match";
+    summaryElements[1].textContent = stand
+        ? standSelect.options[standSelect.selectedIndex].text
+        : "Choose a stand";
+    summaryElements[2].textContent = price !== undefined ? currency.format(price) : "—";
+    summaryElements[3].textContent = quantityInput.value || "—";
+    summaryElements[4].textContent = price !== undefined && validQuantity
+        ? currency.format(price * quantity)
+        : "—";
 }
 
 const matchSelect = document.getElementById("match-select");
@@ -74,7 +74,10 @@ const quantityInput = document.getElementById("ticket-quantity");
 [matchSelect, standSelect, quantityInput].forEach((control) => {
     if (control) {
         control.addEventListener("input", updateSummary);
-        control.addEventListener("change", updateSummary);
+        control.addEventListener("change", () => {
+            updateSummary();
+            showToast("Booking summary updated.");
+        });
     }
 });
 
@@ -135,6 +138,8 @@ bookingForms.forEach((form) => {
             formMessage.hidden = true;
             formMessage.textContent = "";
         }
+
+        window.setTimeout(updateSummary, 0);
     });
 });
 
