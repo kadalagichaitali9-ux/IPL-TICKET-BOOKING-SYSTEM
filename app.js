@@ -71,6 +71,40 @@ const matchSelect = document.getElementById("match-select");
 const standSelect = document.getElementById("stand-select");
 const quantityInput = document.getElementById("ticket-quantity");
 
+[...document.querySelectorAll(".menu-toggle")].forEach((menuToggle) => {
+    const navigation = document.getElementById(menuToggle.getAttribute("aria-controls"));
+    if (!navigation) {
+        return;
+    }
+
+    const setMenuOpen = (isOpen) => {
+        menuToggle.setAttribute("aria-expanded", String(isOpen));
+        navigation.classList.toggle("is-open", isOpen);
+    };
+
+    menuToggle.addEventListener("click", () => {
+        setMenuOpen(menuToggle.getAttribute("aria-expanded") !== "true");
+    });
+
+    navigation.addEventListener("click", (event) => {
+        if (event.target instanceof Element && event.target.closest("a")) {
+            setMenuOpen(false);
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            setMenuOpen(false);
+        }
+    });
+
+    window.addEventListener("resize", () => {
+        if (window.innerWidth > 760) {
+            setMenuOpen(false);
+        }
+    });
+});
+
 [matchSelect, standSelect, quantityInput].forEach((control) => {
     if (control) {
         control.addEventListener("input", updateSummary);
@@ -84,9 +118,24 @@ const quantityInput = document.getElementById("ticket-quantity");
 const teamFilter = document.getElementById("team-filter");
 if (teamFilter) {
     teamFilter.addEventListener("change", (event) => {
-        const selectedTeam = event.target.value;
-        document.querySelectorAll("#schedule-body tr").forEach((row) => {
-            row.hidden = selectedTeam !== "all" && !row.dataset.teams.split(",").includes(selectedTeam);
+        const selectedTeam = event.currentTarget.value;
+        document.querySelectorAll(".match-card").forEach((card) => {
+            card.hidden = selectedTeam !== "all" && !card.dataset.teams.split(",").includes(selectedTeam);
+        });
+    });
+}
+
+const scheduleCards = document.getElementById("schedule-cards");
+if (scheduleCards) {
+    document.querySelectorAll("[data-schedule-view]").forEach((button) => {
+        button.addEventListener("click", () => {
+            const isListView = button.dataset.scheduleView === "list";
+            scheduleCards.classList.toggle("is-list", isListView);
+            document.querySelectorAll("[data-schedule-view]").forEach((viewButton) => {
+                const isActive = viewButton === button;
+                viewButton.classList.toggle("is-active", isActive);
+                viewButton.setAttribute("aria-pressed", String(isActive));
+            });
         });
     });
 }
