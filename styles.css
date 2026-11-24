@@ -68,6 +68,7 @@
         }
 
         .nav-wrap {
+            position: relative;
             min-height: 72px;
             justify-content: space-between;
             gap: 24px;
@@ -112,6 +113,33 @@
         .nav-links a:hover,
         .nav-links a:focus-visible {
             color: #fff;
+        }
+
+        .menu-toggle {
+            display: none;
+            width: 44px;
+            height: 44px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            border: 1px solid rgba(255, 255, 255, .35);
+            border-radius: 10px;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            width: 19px;
+            height: 2px;
+            border-radius: 2px;
+            background: #fff;
+        }
+
+        .menu-toggle:focus-visible,
+        .view-button:focus-visible {
+            outline: 3px solid rgba(66, 99, 235, .5);
+            outline-offset: 3px;
         }
 
         .hero {
@@ -378,10 +406,6 @@
             text-align: left;
         }
 
-        .schedule-table {
-            min-width: 920px;
-        }
-
         th,
         td {
             padding: 15px 16px;
@@ -408,12 +432,131 @@
         }
 
         .team-pair {
-            min-width: 170px;
+            margin: 0;
             font-weight: 750;
         }
 
         .team-pair span {
             color: var(--orange-dark);
+        }
+
+        .schedule-tools {
+            display: flex;
+            align-items: end;
+            gap: 12px;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 3px;
+            padding: 4px;
+            border-radius: 10px;
+            background: #e9edf5;
+        }
+
+        .view-button {
+            min-height: 38px;
+            padding: 7px 13px;
+            border: 0;
+            border-radius: 7px;
+            background: transparent;
+            color: #47516a;
+            font-size: .85rem;
+            font-weight: 750;
+            cursor: pointer;
+        }
+
+        .view-button.is-active {
+            background: #fff;
+            color: var(--navy);
+            box-shadow: 0 2px 6px rgba(24, 35, 62, .12);
+        }
+
+        .match-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .match-card {
+            display: flex;
+            min-width: 0;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 18px;
+            padding: 22px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            background: var(--paper);
+            box-shadow: 0 12px 32px rgba(24, 35, 62, .045);
+        }
+
+        .match-card[hidden] {
+            display: none;
+        }
+
+        .match-number {
+            margin-bottom: 7px;
+            color: var(--orange-dark);
+            font-size: .74rem;
+            font-weight: 850;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .match-card .team-pair {
+            font-size: 1.05rem;
+        }
+
+        .match-venue {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 12px;
+            margin: 9px 0 0;
+            color: var(--muted);
+            font-size: .84rem;
+        }
+
+        .match-prices {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
+            margin: auto 0 0;
+        }
+
+        .match-prices div {
+            min-width: 0;
+            padding: 10px 8px;
+            border-radius: 9px;
+            background: #f8f9fc;
+            text-align: center;
+        }
+
+        .match-prices dt {
+            color: var(--muted);
+            font-size: .72rem;
+            font-weight: 700;
+        }
+
+        .match-prices dd {
+            margin: 3px 0 0;
+            font-size: .85rem;
+            font-weight: 800;
+        }
+
+        .match-grid.is-list {
+            grid-template-columns: 1fr;
+        }
+
+        .match-grid.is-list .match-card {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(280px, .9fr) auto;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .match-grid.is-list .match-prices {
+            margin: 0;
         }
 
         .price {
@@ -527,6 +670,29 @@
             font-weight: 700;
         }
 
+        .toast {
+            position: fixed;
+            z-index: 20;
+            right: 24px;
+            bottom: 24px;
+            max-width: min(390px, calc(100% - 32px));
+            padding: 14px 18px;
+            border: 1px solid rgba(255, 255, 255, .16);
+            border-radius: 12px;
+            background: var(--navy);
+            box-shadow: 0 12px 32px rgba(16, 23, 42, .24);
+            color: #fff;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(12px);
+            transition: opacity .2s ease, transform .2s ease;
+        }
+
+        .toast.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         .form-actions {
             display: flex;
             gap: 12px;
@@ -570,7 +736,9 @@
             color: #fff;
         }
 
+        .summary-card h2,
         .summary-card h3 {
+            margin-bottom: 6px;
             font-size: 1.25rem;
         }
 
@@ -669,28 +837,41 @@
         }
 
         @media (max-width: 760px) {
-            body {
-                padding-top: 104px;
+            .nav-wrap {
+                gap: 12px;
+                padding-block: 10px;
             }
 
-            .nav-wrap {
-                align-items: flex-start;
-                flex-direction: column;
-                gap: 10px;
-                padding-block: 13px;
+            .menu-toggle {
+                display: flex;
             }
 
             .nav-links {
+                position: absolute;
+                top: 100%;
+                right: 0;
+                left: 0;
+                display: none;
+                align-items: stretch;
+                flex-direction: column;
+                gap: 0;
+                padding: 8px 14px 14px;
+                background: rgba(16, 23, 42, .98);
+                box-shadow: 0 12px 20px rgba(16, 23, 42, .18);
+            }
+
+            .nav-links.is-open {
+                display: flex;
+            }
+
+            .nav-links li {
                 width: 100%;
-                justify-content: space-between;
-                gap: 12px;
-                overflow-x: auto;
-                padding-bottom: 3px;
             }
 
             .nav-links a {
-                font-size: .82rem;
-                white-space: nowrap;
+                display: block;
+                padding: 10px 6px;
+                font-size: .9rem;
             }
 
             .hero {
@@ -702,17 +883,27 @@
             }
 
             .about-grid,
-            .booking-layout {
+            .booking-layout,
+            .match-grid {
                 grid-template-columns: 1fr;
             }
 
             .schedule-topline {
+                flex-direction: column;
+            }
+
+            .schedule-tools {
                 align-items: stretch;
                 flex-direction: column;
             }
 
-            .filter-field {
-                max-width: 100%;
+            .match-grid.is-list .match-card {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .match-grid.is-list .match-prices {
+                margin: 0;
             }
 
             .summary-card {
